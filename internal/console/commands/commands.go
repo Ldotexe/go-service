@@ -11,12 +11,12 @@ import (
 	"homework-4/internal/console/update"
 )
 
-func addCommand(commands map[string]command.Command, name string, description string, New func() command.Runner) error {
+func addCommand(commands map[string]command.Command, name string, description string, runner command.Runner) error {
 	_, ok := commands[name]
 	if ok {
 		return errors.ErrCommandAlreadyExist
 	}
-	commands[name] = *command.NewCommand(name, description, New())
+	commands[name] = *command.NewCommand(name, description, runner)
 	return nil
 }
 
@@ -26,7 +26,7 @@ func InitCommands() (map[string]command.Command, error) {
 	err := addCommand(
 		m, "spell",
 		"takes a word as input and displays all the letters of that word separated by a space to the console",
-		spell.New,
+		spell.New(),
 	)
 	if err != nil {
 		return m, err
@@ -35,23 +35,23 @@ func InitCommands() (map[string]command.Command, error) {
 	err = addCommand(
 		m,
 		"consolefmt", "inserts a tab before each paragraph and puts a dot at the end of sentences for *.txt file",
-		consolefmt.New,
+		consolefmt.New(),
 	)
 	err = addCommand(
 		m, "get",
-		"runs the get command with the ID specified in the argument", get.New,
+		"runs the get command with the ID specified in the argument", get.New(),
 	)
 	err = addCommand(
 		m, "delete",
-		"runs the delete command with the ID specified in the argument", delete.New,
+		"runs the delete command with the ID specified in the argument", delete.New(),
 	)
 	err = addCommand(
 		m, "post",
-		"runs the post command with the ID, name and points specified in the arguments", post.New,
+		"runs the post command with the ID, name and points specified in the arguments", post.New(),
 	)
 	err = addCommand(
 		m, "update",
-		"runs the update command with the ID, name and points specified in the arguments", update.New,
+		"runs the update command with the ID, name and points specified in the arguments", update.New(),
 	)
 
 	return m, nil

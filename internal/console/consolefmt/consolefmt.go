@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"strings"
-	"unicode"
 
 	"homework-4/internal/console/command"
 	"homework-4/internal/console/errors"
@@ -64,28 +63,13 @@ func read(r io.Reader) []string {
 }
 
 func processLine(line string) string {
-	res := ""
-	s := strings.Split(line, " ")
-	for i, word := range s {
-		if unicode.IsUpper(rune(word[0])) {
-			if i == 0 {
-				res += "\t"
-			} else {
-				if strings.HasSuffix(s[i-1], ".") {
-					res += " "
-				} else {
-					res += ". "
-				}
-			}
-		} else {
-			if i != 0 {
-				res += " "
-			}
-		}
-		res += word
-
+	if !strings.HasPrefix(line, "\t") && !strings.HasPrefix(line, "    ") {
+		line = "\t" + line
 	}
-	return res
+	if !strings.HasSuffix(line, ".") {
+		line += "."
+	}
+	return line
 }
 
 func process(lines []string) []string {

@@ -1,6 +1,0 @@
-	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer mattis mauris a est hendrerit commodo. Nulla ipsum
-urna, fermentum non suscipit vel, scelerisque vitae nisi. Phasellus pellentesque feugiat laoreet. Praesent id tempor
-quam. Sed suscipit, urna non vestibulum tempor, odio massa interdum magna, tristique ornare turpis justo eu velit
-	Etiam pharetra et lorem a euismod. Nam venenatis, justo molestie pretium tristique, arcu ex mattis elit, in auctor
-arcu quam sit amet velit. Cras nibh nibh, eleifend eget lacus sit amet, malesuada ultrices dui. Pellentesque a ornare
-mi, ac viverra lorem. Pellentesque pellentesque ullamcorper metus, viverra sollicitudin nisl semper vel. Quisque
