@@ -20,13 +20,11 @@ func New() command.Runner {
 }
 
 func (c *Command) Run(args []string) error {
-	commandName := args[0]
-
-	if len(args) != 2 {
-		return errors.WrongArgsNumError(commandName)
+	if len(args) != 1 {
+		return errors.ErrWrongArgsNum
 	}
 
-	filename := args[1]
+	filename := args[0]
 	if !strings.HasSuffix(filename, ".txt") {
 		return errors.ErrWrongFormatFilename
 	}

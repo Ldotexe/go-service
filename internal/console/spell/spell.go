@@ -17,13 +17,11 @@ func New() command.Runner {
 }
 
 func (c *Command) Run(args []string) error {
-	commandName := args[0]
-
-	if len(args) != 2 {
-		return errors.WrongArgsNumError(commandName)
+	if len(args) != 1 {
+		return errors.ErrWrongArgsNum
 	}
 
-	word := args[1]
+	word := args[0]
 	fmt.Print(spell(word))
 	return nil
 }

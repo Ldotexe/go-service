@@ -16,7 +16,15 @@ func Run(args []string) error {
 	name := args[0]
 	com, ok := initCommands[name]
 	if ok {
-		return com.Runner.Run(args)
+		err = com.Runner.Run(args[1:])
+		if err != nil {
+			if err == errors.ErrWrongArgsNum {
+				return errors.WrongArgsNumError(name)
+			}
+			return err
+		}
+
+		return nil
 	}
 	return errors.UnknownCommandError(name)
 }

@@ -18,13 +18,11 @@ func New() command.Runner {
 }
 
 func (c *Command) Run(args []string) error {
-	commandName := args[0]
-
-	if len(args) != 2 {
-		return errors.WrongArgsNumError(commandName)
+	if len(args) != 1 {
+		return errors.ErrWrongArgsNum
 	}
 
-	id, err := strconv.Atoi(args[1])
+	id, err := strconv.Atoi(args[0])
 	if err != nil {
 		return errors.ErrWrongFormatId
 	}
