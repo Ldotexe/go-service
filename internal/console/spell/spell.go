@@ -7,22 +7,20 @@ import (
 	"homework-4/internal/console/errors"
 )
 
+const newLineSymbol = rune(10)
+
 type Command struct {
 }
 
-func (c *Command) Add() *command.Command {
-	return command.NewCommand(
-		"spell",
-		"takes a word as input and displays all the letters of that word separated by a space to the console",
-		&Command{},
-	)
+func New() command.Runner {
+	return &Command{}
 }
 
 func (c *Command) Run(args []string) error {
 	commandName := args[0]
 
 	if len(args) != 2 {
-		return errors.NewErrWrongArgsNum(commandName)
+		return errors.WrongArgsNumError(commandName)
 	}
 
 	word := args[1]
@@ -31,10 +29,11 @@ func (c *Command) Run(args []string) error {
 }
 
 func spell(word string) string {
-	res := ""
-	for _, c := range word {
-		res += fmt.Sprintf("%c ", c)
+	res := make([]rune, len(word)*2)
+	for i, c := range word {
+		res[i*2] = c
+		res[i*2+1] = ' '
 	}
-	res += "\n"
-	return res
+	res[len(res)-1] = newLineSymbol
+	return string(res)
 }

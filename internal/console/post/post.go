@@ -2,7 +2,7 @@ package post
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os/exec"
 	"strconv"
 
@@ -13,19 +13,15 @@ import (
 type Command struct {
 }
 
-func (c *Command) Add() *command.Command {
-	return command.NewCommand(
-		"post",
-		"runs the post command with the ID, name and points specified in the arguments",
-		&Command{},
-	)
+func New() command.Runner {
+	return &Command{}
 }
 
 func (c *Command) Run(args []string) error {
 	commandName := args[0]
 
 	if len(args) != 4 {
-		return errors.NewErrWrongArgsNum(commandName)
+		return errors.WrongArgsNumError(commandName)
 	}
 
 	id, err := strconv.Atoi(args[1])
@@ -55,7 +51,7 @@ func post(id int, name string, points int) error {
 		return err
 	}
 
-	data, err := ioutil.ReadAll(stdout)
+	data, err := io.ReadAll(stdout)
 	if err != nil {
 		return err
 	}

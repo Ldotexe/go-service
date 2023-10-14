@@ -2,7 +2,7 @@ package delete
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os/exec"
 	"strconv"
 
@@ -13,19 +13,15 @@ import (
 type Command struct {
 }
 
-func (c *Command) Add() *command.Command {
-	return command.NewCommand(
-		"delete",
-		"runs the delete command with the ID specified in the argument",
-		&Command{},
-	)
+func New() command.Runner {
+	return &Command{}
 }
 
 func (c *Command) Run(args []string) error {
 	commandName := args[0]
 
 	if len(args) != 2 {
-		return errors.NewErrWrongArgsNum(commandName)
+		return errors.WrongArgsNumError(commandName)
 	}
 
 	id, err := strconv.Atoi(args[1])
@@ -47,7 +43,7 @@ func deleteID(id int) error {
 		return err
 	}
 
-	data, err := ioutil.ReadAll(stdout)
+	data, err := io.ReadAll(stdout)
 	if err != nil {
 		return err
 	}

@@ -16,5 +16,4 @@ func NewCommand(name string, description string, run Runner) *Command {
 
 type Runner interface {
 	Run(args []string) error
-	Add() *Command
 }

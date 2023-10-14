@@ -1,4 +1,4 @@
-package put
+package update
 
 import (
 	"fmt"
@@ -13,19 +13,15 @@ import (
 type Command struct {
 }
 
-func (c *Command) Add() *command.Command {
-	return command.NewCommand(
-		"put",
-		"runs the put command with the ID, name and points specified in the arguments",
-		&Command{},
-	)
+func New() command.Runner {
+	return &Command{}
 }
 
 func (c *Command) Run(args []string) error {
 	commandName := args[0]
 
 	if len(args) != 4 {
-		return errors.NewErrWrongArgsNum(commandName)
+		return errors.WrongArgsNumError(commandName)
 	}
 
 	id, err := strconv.Atoi(args[1])
@@ -37,10 +33,10 @@ func (c *Command) Run(args []string) error {
 	if err != nil {
 		return errors.ErrWrongFormatPoints
 	}
-	return put(id, name, points)
+	return update(id, name, points)
 }
 
-func put(id int, name string, points int) error {
+func update(id int, name string, points int) error {
 	cmd := exec.Command(
 		"curl", "-X", "PUT", "localhost:9000/student", "-d",
 		fmt.Sprintf("{\"id\":%d,\"name\":\"%s\",\"points\":%d}", id, name, points), "-i",

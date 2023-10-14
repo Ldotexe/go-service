@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"regexp"
 	"strings"
+	"unicode"
 
 	"homework-4/internal/console/command"
 	"homework-4/internal/console/errors"
@@ -15,26 +15,19 @@ import (
 type Command struct {
 }
 
-func (c *Command) Add() *command.Command {
-	return command.NewCommand(
-		"consolefmt", "inserts a tab before each paragraph and puts a dot at the end of sentences for *.txt file",
-		&Command{},
-	)
+func New() command.Runner {
+	return &Command{}
 }
 
 func (c *Command) Run(args []string) error {
-	commandName := args[1]
+	commandName := args[0]
 
-	if len(args) != 3 {
-		return errors.NewErrWrongArgsNum(commandName)
+	if len(args) != 2 {
+		return errors.WrongArgsNumError(commandName)
 	}
 
-	filename := args[2]
-	ok, err := regexp.MatchString(`.*\.txt`, filename)
-	if err != nil {
-		return err
-	}
-	if !ok {
+	filename := args[1]
+	if !strings.HasSuffix(filename, ".txt") {
 		return errors.ErrWrongFormatFilename
 	}
 
@@ -72,31 +65,15 @@ func read(r io.Reader) []string {
 	return out
 }
 
-func wordIsFirst(word string) bool {
-	ok, err := regexp.MatchString(`^[A-Z][a-z]*`, word)
-	if err != nil {
-		return false
-	}
-	return ok
-}
-
-func wordIsLast(word string) bool {
-	ok, err := regexp.MatchString(`.*\.`, word)
-	if err != nil {
-		return false
-	}
-	return ok
-}
-
 func processLine(line string) string {
 	res := ""
 	s := strings.Split(line, " ")
 	for i, word := range s {
-		if wordIsFirst(word) {
+		if unicode.IsUpper(rune(word[0])) {
 			if i == 0 {
 				res += "\t"
 			} else {
-				if wordIsLast(s[i-1]) {
+				if strings.HasSuffix(s[i-1], ".") {
 					res += " "
 				} else {
 					res += ". "
@@ -114,7 +91,7 @@ func processLine(line string) string {
 }
 
 func process(lines []string) []string {
-	out := make([]string, 0)
+	out := make([]string, 0, len(lines))
 	for _, line := range lines {
 		out = append(out, processLine(line))
 	}
