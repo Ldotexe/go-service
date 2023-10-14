@@ -5,7 +5,10 @@ import (
 
 	"homework-4/internal/console/command"
 	"homework-4/internal/console/consolefmt"
+	"homework-4/internal/console/delete"
 	"homework-4/internal/console/get"
+	"homework-4/internal/console/post"
+	"homework-4/internal/console/put"
 	"homework-4/internal/console/spell"
 )
 
@@ -26,6 +29,18 @@ func SetHelp() map[string]command.Command {
 
 	command3 := get.Command{}
 	obj = command3.Add()
+	m[obj.Name] = *obj
+
+	command4 := delete.Command{}
+	obj = command4.Add()
+	m[obj.Name] = *obj
+
+	command5 := post.Command{}
+	obj = command5.Add()
+	m[obj.Name] = *obj
+
+	command6 := put.Command{}
+	obj = command6.Add()
 	m[obj.Name] = *obj
 
 	return m

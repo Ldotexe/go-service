@@ -1,4 +1,4 @@
-package get
+package delete
 
 import (
 	"fmt"
@@ -15,8 +15,8 @@ type Command struct {
 
 func (c *Command) Add() *command.Command {
 	return command.NewCommand(
-		"get",
-		"runs the get command with the ID specified in the argument",
+		"delete",
+		"runs the delete command with the ID specified in the argument",
 		c.Run,
 	)
 }
@@ -32,11 +32,11 @@ func (c *Command) Run(args []string) error {
 	if err != nil {
 		return errors.ErrWrongFormatId
 	}
-	return getID(id)
+	return deleteID(id)
 }
 
-func getID(id int) error {
-	cmd := exec.Command("curl", "-X", "GET", fmt.Sprintf("localhost:9000/student/%d", id), "-i")
+func deleteID(id int) error {
+	cmd := exec.Command("curl", "-X", "DELETE", fmt.Sprintf("localhost:9000/student/%d", id), "-i")
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {

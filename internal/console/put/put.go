@@ -1,4 +1,4 @@
-package get
+package put
 
 import (
 	"fmt"
@@ -15,8 +15,8 @@ type Command struct {
 
 func (c *Command) Add() *command.Command {
 	return command.NewCommand(
-		"get",
-		"runs the get command with the ID specified in the argument",
+		"put",
+		"runs the put command with the ID, name and points specified in the arguments",
 		c.Run,
 	)
 }
@@ -24,7 +24,7 @@ func (c *Command) Add() *command.Command {
 func (c *Command) Run(args []string) error {
 	commandName := args[1]
 
-	if len(args) != 3 {
+	if len(args) != 5 {
 		return errors.NewErrWrongArgsNum(commandName)
 	}
 
@@ -32,11 +32,19 @@ func (c *Command) Run(args []string) error {
 	if err != nil {
 		return errors.ErrWrongFormatId
 	}
-	return getID(id)
+	name := args[3]
+	points, err := strconv.Atoi(args[4])
+	if err != nil {
+		return errors.ErrWrongFormatPoints
+	}
+	return put(id, name, points)
 }
 
-func getID(id int) error {
-	cmd := exec.Command("curl", "-X", "GET", fmt.Sprintf("localhost:9000/student/%d", id), "-i")
+func put(id int, name string, points int) error {
+	cmd := exec.Command(
+		"curl", "-X", "PUT", "localhost:9000/student", "-d",
+		fmt.Sprintf("{\"id\":%d,\"name\":\"%s\",\"points\":%d}", id, name, points), "-i",
+	)
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {

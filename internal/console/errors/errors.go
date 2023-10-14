@@ -10,6 +10,7 @@ var EndOfErr = "Run 'console help' for usage."
 var (
 	ErrWrongFormatFilename = errors.New("wrong format for argument *.txt")
 	ErrWrongFormatId       = errors.New("wrong format for argument ID")
+	ErrWrongFormatPoints   = errors.New("wrong format for argument points")
 )
 
 func NewErrUnknownCommand(command string) error {
