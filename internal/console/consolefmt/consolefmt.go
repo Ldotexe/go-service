@@ -18,7 +18,7 @@ type Command struct {
 func (c *Command) Add() *command.Command {
 	return command.NewCommand(
 		"consolefmt", "inserts a tab before each paragraph and puts a dot at the end of sentences for *.txt file",
-		c.Run,
+		&Command{},
 	)
 }
 

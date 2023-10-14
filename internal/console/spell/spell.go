@@ -14,18 +14,18 @@ func (c *Command) Add() *command.Command {
 	return command.NewCommand(
 		"spell",
 		"takes a word as input and displays all the letters of that word separated by a space to the console",
-		c.Run,
+		&Command{},
 	)
 }
 
 func (c *Command) Run(args []string) error {
-	commandName := args[1]
+	commandName := args[0]
 
-	if len(args) != 3 {
+	if len(args) != 2 {
 		return errors.NewErrWrongArgsNum(commandName)
 	}
 
-	word := args[2]
+	word := args[1]
 	fmt.Print(spell(word))
 	return nil
 }

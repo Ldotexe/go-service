@@ -5,14 +5,14 @@ import (
 )
 
 func Run(args []string) error {
-	commands := SetHelp()
-	if len(args) == 1 || args[1] == "help" {
+	commands := initCommands()
+	if len(args) == 0 || args[0] == "help" {
 		return Help(commands)
 	}
-	name := args[1]
+	name := args[0]
 	com, ok := commands[name]
 	if ok {
-		return com.Run(args)
+		return com.Runner.Run(args)
 	}
 	return errors.NewErrUnknownCommand(name)
 }

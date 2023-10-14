@@ -17,18 +17,18 @@ func (c *Command) Add() *command.Command {
 	return command.NewCommand(
 		"delete",
 		"runs the delete command with the ID specified in the argument",
-		c.Run,
+		&Command{},
 	)
 }
 
 func (c *Command) Run(args []string) error {
-	commandName := args[1]
+	commandName := args[0]
 
-	if len(args) != 3 {
+	if len(args) != 2 {
 		return errors.NewErrWrongArgsNum(commandName)
 	}
 
-	id, err := strconv.Atoi(args[2])
+	id, err := strconv.Atoi(args[1])
 	if err != nil {
 		return errors.ErrWrongFormatId
 	}

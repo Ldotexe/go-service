@@ -17,23 +17,23 @@ func (c *Command) Add() *command.Command {
 	return command.NewCommand(
 		"put",
 		"runs the put command with the ID, name and points specified in the arguments",
-		c.Run,
+		&Command{},
 	)
 }
 
 func (c *Command) Run(args []string) error {
-	commandName := args[1]
+	commandName := args[0]
 
-	if len(args) != 5 {
+	if len(args) != 4 {
 		return errors.NewErrWrongArgsNum(commandName)
 	}
 
-	id, err := strconv.Atoi(args[2])
+	id, err := strconv.Atoi(args[1])
 	if err != nil {
 		return errors.ErrWrongFormatId
 	}
-	name := args[3]
-	points, err := strconv.Atoi(args[4])
+	name := args[2]
+	points, err := strconv.Atoi(args[3])
 	if err != nil {
 		return errors.ErrWrongFormatPoints
 	}

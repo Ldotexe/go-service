@@ -16,32 +16,20 @@ var (
 	helpFirstPart = "Console is a tool for doing couple of things\n\nUsage:\n\n\t\tconsole <command> [arguments]\n\nThe commands are:\n\n"
 )
 
-func SetHelp() map[string]command.Command {
+func addCommand(commands map[string]command.Command, runner command.Runner) {
+	cmd := runner.Add()
+	commands[cmd.Name] = *cmd
+}
+
+func initCommands() map[string]command.Command {
 	m := make(map[string]command.Command)
 
-	command1 := spell.Command{}
-	obj := command1.Add()
-	m[obj.Name] = *obj
-
-	command2 := consolefmt.Command{}
-	obj = command2.Add()
-	m[obj.Name] = *obj
-
-	command3 := get.Command{}
-	obj = command3.Add()
-	m[obj.Name] = *obj
-
-	command4 := delete.Command{}
-	obj = command4.Add()
-	m[obj.Name] = *obj
-
-	command5 := post.Command{}
-	obj = command5.Add()
-	m[obj.Name] = *obj
-
-	command6 := put.Command{}
-	obj = command6.Add()
-	m[obj.Name] = *obj
+	addCommand(m, &spell.Command{})
+	addCommand(m, &consolefmt.Command{})
+	addCommand(m, &get.Command{})
+	addCommand(m, &delete.Command{})
+	addCommand(m, &post.Command{})
+	addCommand(m, &put.Command{})
 
 	return m
 }

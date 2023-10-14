@@ -3,18 +3,18 @@ package command
 type Command struct {
 	Name        string
 	Description string
-	Run         func(args []string) error
+	Runner      Runner
 }
 
-func NewCommand(name string, description string, run func(args []string) error) *Command {
+func NewCommand(name string, description string, run Runner) *Command {
 	return &Command{
 		Name:        name,
 		Description: description,
-		Run:         run,
+		Runner:      run,
 	}
 }
 
-type Usage interface {
-	Add() *Command
+type Runner interface {
 	Run(args []string) error
+	Add() *Command
 }
