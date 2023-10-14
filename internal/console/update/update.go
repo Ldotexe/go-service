@@ -2,7 +2,7 @@ package update
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os/exec"
 	"strconv"
 
@@ -49,7 +49,7 @@ func update(id int, name string, points int) error {
 		return err
 	}
 
-	data, err := ioutil.ReadAll(stdout)
+	data, err := io.ReadAll(stdout)
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,8 @@
 package console
 
 import (
+	ers "errors"
+
 	"homework-4/internal/console/commands"
 	"homework-4/internal/console/errors"
 )
@@ -18,7 +20,7 @@ func Run(args []string) error {
 	if ok {
 		err = com.Runner.Run(args[1:])
 		if err != nil {
-			if err == errors.ErrWrongArgsNum {
+			if ers.Is(err, errors.ErrWrongArgsNum) {
 				return errors.WrongArgsNumError(name)
 			}
 			return err
