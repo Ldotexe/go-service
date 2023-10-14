@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 	"regexp"
-	"unicode"
+	"strings"
 
 	"homework-4/internal/console/command"
 	"homework-4/internal/console/errors"
@@ -30,31 +30,35 @@ func (c *Command) Run(args []string) error {
 	}
 
 	filename := args[2]
-	if !regexp.MustCompile(`*.txt`).MatchString(filename) {
-		return errors.ErrWrongFormat
+	ok, err := regexp.MatchString(`.*\.txt`, filename)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return errors.ErrWrongFormatFilename
 	}
 
 	return format(filename)
 }
 
 func format(filename string) error {
-	r, err := os.Open(filename)
+	f, err := os.Open(filename)
 	if err != nil {
 		return err
 	}
-	defer r.Close()
+	defer f.Close()
 
-	in := read(r)
+	in := read(f)
+
+	f, err = os.OpenFile(filename, os.O_WRONLY, 0666)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
 
 	out := process(in)
 
-	w, err := os.OpenFile(filename)
-	if err != nil {
-		return err
-	}
-	write(w, out)
-
-	return nil
+	return write(f, out)
 }
 
 func read(r io.Reader) []string {
@@ -68,16 +72,45 @@ func read(r io.Reader) []string {
 	return out
 }
 
+func wordIsFirst(word string) bool {
+	ok, err := regexp.MatchString(`^[A-Z][a-z]*`, word)
+	if err != nil {
+		return false
+	}
+	return ok
+}
+
+func wordIsLast(word string) bool {
+	ok, err := regexp.MatchString(`.*\.`, word)
+	if err != nil {
+		return false
+	}
+	return ok
+}
+
 func processLine(line string) string {
 	res := ""
-	if unicode.IsUpper(rune(line[0])) {
-		res += "\t"
-	}
-	for _, c := range line {
-		if unicode.IsUpper(c) {
-
+	s := strings.Split(line, " ")
+	for i, word := range s {
+		if wordIsFirst(word) {
+			if i == 0 {
+				res += "\t"
+			} else {
+				if wordIsLast(s[i-1]) {
+					res += " "
+				} else {
+					res += ". "
+				}
+			}
+		} else {
+			if i != 0 {
+				res += " "
+			}
 		}
+		res += word
+
 	}
+	return res
 }
 
 func process(lines []string) []string {
@@ -88,21 +121,12 @@ func process(lines []string) []string {
 	return out
 }
 
-func write(res *WordMap, in []string) {
-	for procRes := range in {
-		for i, word := range res.words {
-			res.mp[word] += procRes.keywords[i]
+func write(w io.Writer, in []string) error {
+	for _, str := range in {
+		_, err := fmt.Fprintln(w, str)
+		if err != nil {
+			return err
 		}
 	}
-
-	for _, word := range res.words {
-		res.num += res.mp[word]
-	}
-}
-
-func showResults(wm WordMap) {
-	for _, word := range wm.words {
-		fmt.Printf("%s: %d\n", word, wm.mp[word])
-	}
-	fmt.Printf("всего: %d\n", wm.num)
+	return nil
 }

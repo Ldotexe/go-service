@@ -7,8 +7,8 @@ import (
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v4"
-	"homework-3/internal/db"
-	"homework-3/internal/repository"
+	"homework-4/internal/service/db"
+	"homework-4/internal/service/repository"
 )
 
 type StudentsRepo struct {

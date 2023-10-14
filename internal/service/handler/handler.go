@@ -10,8 +10,8 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"homework-3/internal/repository"
-	"homework-3/internal/repository/studentDB"
+	"homework-4/internal/service/repository"
+	"homework-4/internal/service/repository/studentDB"
 )
 
 var (

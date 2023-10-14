@@ -5,6 +5,7 @@ import (
 
 	"homework-4/internal/console/command"
 	"homework-4/internal/console/consolefmt"
+	"homework-4/internal/console/get"
 	"homework-4/internal/console/spell"
 )
 
@@ -21,6 +22,10 @@ func SetHelp() map[string]command.Command {
 
 	command2 := consolefmt.Command{}
 	obj = command2.Add()
+	m[obj.Name] = *obj
+
+	command3 := get.Command{}
+	obj = command3.Add()
 	m[obj.Name] = *obj
 
 	return m
