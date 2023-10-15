@@ -1,6 +1,8 @@
 package commands
 
 import (
+	ers "errors"
+
 	"homework-4/internal/console/command"
 	"homework-4/internal/console/consolefmt"
 	"homework-4/internal/console/delete"
@@ -22,37 +24,40 @@ func addCommand(commands map[string]command.Command, name string, description st
 
 func InitCommands() (map[string]command.Command, error) {
 	m := make(map[string]command.Command)
+	err := ers.Join(
 
-	err := addCommand(
-		m, "spell",
-		"takes a word as input and displays all the letters of that word separated by a space to the console",
-		spell.New(),
-	)
-	if err != nil {
-		return m, err
-	}
+		addCommand(
+			m, "spell",
+			"takes a word as input and displays all the letters of that word separated by a space to the console",
+			spell.New(),
+		),
 
-	err = addCommand(
-		m,
-		"consolefmt", "inserts a tab before each paragraph and puts a dot at the end of sentences for *.txt file",
-		consolefmt.New(),
-	)
-	err = addCommand(
-		m, "get",
-		"runs the get command with the ID specified in the argument", get.New(),
-	)
-	err = addCommand(
-		m, "delete",
-		"runs the delete command with the ID specified in the argument", delete.New(),
-	)
-	err = addCommand(
-		m, "post",
-		"runs the post command with the ID, name and points specified in the arguments", post.New(),
-	)
-	err = addCommand(
-		m, "update",
-		"runs the update command with the ID, name and points specified in the arguments", update.New(),
+		addCommand(
+			m,
+			"consolefmt", "inserts a tab before each paragraph and puts a dot at the end of sentences for *.txt file",
+			consolefmt.New(),
+		),
+
+		addCommand(
+			m, "get",
+			"runs the get command with the ID specified in the argument", get.New(),
+		),
+
+		addCommand(
+			m, "delete",
+			"runs the delete command with the ID specified in the argument", delete.New(),
+		),
+
+		addCommand(
+			m, "post",
+			"runs the post command with the ID, name and points specified in the arguments", post.New(),
+		),
+
+		addCommand(
+			m, "update",
+			"runs the update command with the ID, name and points specified in the arguments", update.New(),
+		),
 	)
 
-	return m, nil
+	return m, err
 }
