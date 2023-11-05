@@ -116,16 +116,16 @@ func (s *Server) RunCreate(w http.ResponseWriter, req *http.Request) {
 	student, status, err := parseRequestBody(req)
 	if status != http.StatusOK {
 		writeResponse(w, status, err)
-		s.Sender.SendMessage(req, status)
+		s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 		return
 	}
 	status, err = s.Create(req.Context(), *student)
 	if status != http.StatusOK {
 		writeResponse(w, status, err)
-		s.Sender.SendMessage(req, status)
+		s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 		return
 	}
-	s.Sender.SendMessage(req, status)
+	s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 }
 
 func (s *Server) Get(ctx context.Context, key int64) ([]byte, int, error) {
@@ -147,17 +147,17 @@ func (s *Server) RunGet(w http.ResponseWriter, req *http.Request) {
 	key, status, err := parseRequestKey(req)
 	if status != http.StatusOK {
 		writeResponse(w, status, err)
-		s.Sender.SendMessage(req, status)
+		s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 		return
 	}
 	result, status, err := s.Get(req.Context(), key)
 	if status != http.StatusOK {
 		writeResponse(w, status, err)
-		s.Sender.SendMessage(req, status)
+		s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 		return
 	}
 	writeResult(w, result)
-	s.Sender.SendMessage(req, status)
+	s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 }
 
 func (s *Server) Update(ctx context.Context, student StudentRequest) (int, error) {
@@ -181,16 +181,16 @@ func (s *Server) RunUpdate(w http.ResponseWriter, req *http.Request) {
 	student, status, err := parseRequestBody(req)
 	if status != http.StatusOK {
 		writeResponse(w, status, err)
-		s.Sender.SendMessage(req, status)
+		s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 		return
 	}
 	status, err = s.Update(req.Context(), *student)
 	if status != http.StatusOK {
 		writeResponse(w, status, err)
-		s.Sender.SendMessage(req, status)
+		s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 		return
 	}
-	s.Sender.SendMessage(req, status)
+	s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 }
 
 func (s *Server) Delete(ctx context.Context, key int64) (int, error) {
@@ -208,14 +208,14 @@ func (s *Server) RunDelete(w http.ResponseWriter, req *http.Request) {
 	key, status, err := parseRequestKey(req)
 	if status != http.StatusOK {
 		writeResponse(w, status, err)
-		s.Sender.SendMessage(req, status)
+		s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 		return
 	}
 	status, err = s.Delete(req.Context(), key)
 	if status != http.StatusOK {
 		writeResponse(w, status, err)
-		s.Sender.SendMessage(req, status)
+		s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 		return
 	}
-	s.Sender.SendMessage(req, status)
+	s.Sender.SendMessage(message_broker.NewMessageInfo(req, status))
 }

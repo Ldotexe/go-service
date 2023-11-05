@@ -11,7 +11,17 @@ import (
 )
 
 type Sender interface {
-	SendMessage(request *http.Request, status int)
+	SendMessage(any)
+}
+
+type MessageInfo struct {
+	request *http.Request
+	status  int
+}
+
+type KafkaSender struct {
+	producer *kafka.Producer
+	topic    string
 }
 
 type operationMessage struct {
@@ -19,11 +29,6 @@ type operationMessage struct {
 	Time    time.Time
 	Status  int
 	Success bool
-}
-
-type KafkaSender struct {
-	producer *kafka.Producer
-	topic    string
 }
 
 func CreateSender(brokers []string, topic string) (*KafkaSender, error) {
@@ -38,6 +43,38 @@ func NewKafkaSender(producer *kafka.Producer, topic string) *KafkaSender {
 	return &KafkaSender{
 		producer: producer,
 		topic:    topic,
+	}
+}
+
+func NewMessageInfo(request *http.Request, status int) *MessageInfo {
+	return &MessageInfo{request: request, status: status}
+}
+
+func (m *MessageInfo) GetMessage() (*http.Request, int) {
+	return m.request, m.status
+}
+
+func (s *KafkaSender) SendMessage(value any) {
+	var request *http.Request
+	var status int
+	if msg, ok := value.(interface {
+		GetMessage() (*http.Request, int)
+	}); ok {
+		request, status = msg.GetMessage()
+	} else {
+		fmt.Println("Send async message error: wrong input")
+	}
+	err := s.sendAsyncMessage(
+		operationMessage{
+			Method:  request.Method,
+			Time:    time.Now(),
+			Status:  status,
+			Success: status == http.StatusOK,
+		},
+	)
+
+	if err != nil {
+		fmt.Println("Send async message error: ", err)
 	}
 }
 
@@ -67,19 +104,4 @@ func (s *KafkaSender) buildMessage(message operationMessage) (*sarama.ProducerMe
 		Partition: -1,
 		Key:       sarama.StringEncoder(message.Method),
 	}, nil
-}
-
-func (s *KafkaSender) SendMessage(request *http.Request, status int) {
-	err := s.sendAsyncMessage(
-		operationMessage{
-			Method:  request.Method,
-			Time:    time.Now(),
-			Status:  status,
-			Success: status == http.StatusOK,
-		},
-	)
-
-	if err != nil {
-		fmt.Println("Send async message error: ", err)
-	}
 }

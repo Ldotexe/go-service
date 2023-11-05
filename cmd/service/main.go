@@ -9,15 +9,10 @@ import (
 	"homework-6/internal/service/db"
 	"homework-6/internal/service/handler"
 	"homework-6/internal/service/repository/studentDB"
+	"homework-6/internal/service_kafka_config"
 )
 
 const port = ":9000"
-
-var brokers = []string{
-	"127.0.0.1:9091",
-	"127.0.0.1:9092",
-	"127.0.0.1:9093",
-}
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
@@ -28,15 +23,21 @@ func main() {
 	}
 	defer database.CloseDB(ctx)
 
+	kafkaConfig := service_kafka_config.GetConfig()
+
 	studentRepo := studentDB.NewStudents(database)
-	sender, err := message_broker.CreateSender(brokers, "logs")
+	sender, err := message_broker.CreateSender(kafkaConfig.Brokers, kafkaConfig.TopicName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	server := handler.NewServer(studentRepo, sender)
 
-	go message_broker.Consumer(brokers)
+	var consumer message_broker.Consumer
+	config := consumer.Init()
+	go consumer.Start(config, kafkaConfig.Brokers, kafkaConfig.TopicName)
+	go consumer.PauseProcessing()
+	defer consumer.Close()
 
 	http.Handle("/", handler.CreateRouter(*server))
 	if err := http.ListenAndServe(port, nil); err != nil {
